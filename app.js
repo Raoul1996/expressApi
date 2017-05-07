@@ -9,7 +9,25 @@ var index = require('./routes/index');
 var users = require('./routes/users');
 
 var app = express();
-
+// routes setup
+var apiRoutes = express.Router();
+// strings type
+apiRoutes.get('/book', function (req, res, next) {
+  res.send('book');
+});
+// string model
+apiRoutes.get('/usr/*man', function (req, res, next) {
+  res.send('usr');
+});
+// reg type
+apiRoutes.get(/animals?$/, function (req, res, next) {
+  res.send('animals');
+});
+// args
+apiRoutes.get('/employee/:uid/:age', function (req, res, next) {
+  res.json(req.params);
+});
+app.use('/test', apiRoutes);
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
