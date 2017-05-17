@@ -9,7 +9,32 @@ var index = require('./routes/index')
 var users = require('./routes/users')
 
 var app = express()
-
+apiRoutes.post('/login', function (req, res, next) {
+  res.header('Access-Control-Allow-Origin', '*')
+  res.header('Access-Control-Allow-Credentials', 'true')
+  res.json({
+    'code': 0,
+    'data': {
+      'user': {
+        'userId': 14,
+        'mobile': '15076051320'
+      },
+      'token': '72267e2616dc4abeae99c9ce40dcd562'
+    }
+  })
+})
+apiRoutes.post('/register', function (req, res, next) {
+  res.header('Access-Control-Allow-Origin', '*')
+  res.header('Access-Control-Allow-Credentials', 'true')
+  res.json({
+    'code': 0,
+    'data': {
+      'mobile': '15678945120',
+      'password': '123456',
+      'code': '1234'
+    }
+  })
+})
 /*--------------- add something start ----------------------------*/
 // routes setup
 var apiRoutes = express.Router()
