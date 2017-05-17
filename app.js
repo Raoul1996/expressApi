@@ -9,6 +9,9 @@ var index = require('./routes/index')
 var users = require('./routes/users')
 
 var app = express()
+/*--------------- add something start ----------------------------*/
+// routes setup
+var apiRoutes = express.Router()
 apiRoutes.post('/login', function (req, res, next) {
   res.header('Access-Control-Allow-Origin', '*')
   res.header('Access-Control-Allow-Credentials', 'true')
@@ -35,9 +38,7 @@ apiRoutes.post('/register', function (req, res, next) {
     }
   })
 })
-/*--------------- add something start ----------------------------*/
-// routes setup
-var apiRoutes = express.Router()
+
 // strings type
 apiRoutes.get('/book', function (req, res, next) {
   res.send('book')
