@@ -1,5 +1,6 @@
 var express = require('express')
 var path = require('path')
+var cors = require('cors')
 var favicon = require('serve-favicon')
 var logger = require('morgan')
 var cookieParser = require('cookie-parser')
@@ -9,12 +10,25 @@ var index = require('./routes/index')
 var users = require('./routes/users')
 
 var app = express()
+
 /*--------------- add something start ----------------------------*/
 // routes setup
 var apiRoutes = express.Router()
+apiRoutes.all('*', function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Token,Content-Length, Authorization, Accept, X-Requested-With , yourHeaderFeild');
+  res.header("Access-Control-Allow-Methods","PUT,POST,GET,DELETE,OPTIONS");
+  res.header("X-Powered-By",' 3.2.1')
+  // 应该设置Allow字段用来支持复杂请求的预检
+  res.header("Allow","GET, HEAD, POST, PUT, DELETE, OPTIONS, PATCH")
+  res.header("Content-Type", "application/json;charset=utf-8");
+  if (req.type === 'OPTIONS') {
+    res.send(200)
+  }else{
+    next();
+  }
+});
 apiRoutes.post('/login', function (req, res, next) {
-  res.header('Access-Control-Allow-Origin', '*')
-  res.header('Access-Control-Allow-Credentials', 'true')
   res.json({
     'code': 0,
     'data': {
@@ -27,8 +41,6 @@ apiRoutes.post('/login', function (req, res, next) {
   })
 })
 apiRoutes.post('/register', function (req, res, next) {
-  res.header('Access-Control-Allow-Origin', '*')
-  res.header('Access-Control-Allow-Credentials', 'true')
   res.json({
     'code': 0,
     'data': {
@@ -68,7 +80,7 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended: false}))
 app.use(cookieParser())
 app.use(express.static(path.join(__dirname, 'public')))
-
+app.use(cors())
 app.use('/', index)
 app.use('/users', users)
 // catch 404 and forward to error handler
