@@ -10,16 +10,18 @@ let index = require('./routes/index')
 let users = require('./routes/users')
 
 let app = express()
+const SECRET_STRING = 'vue-login-demo'
+app.set('jwtTokenSecret', SECRET_STRING)
 // 解析req.body
 let multer = require('multer')
 let upload = multer() // 解析 multipart/form-data 类型数据
 app.use(bodyParser.json()) // 解析 application/json 类型数据
 app.use(bodyParser.urlencoded({extended: true})) // 解析 application/x-www-form-urlencoded 类型数据
 /*-------------------token------------------*/
-const SECRET_STRING = 'vue-login-demo'
+// http://blog.leanote.com/post/what722@163.com/%E5%AE%9E%E7%8E%B0%E5%9F%BA%E4%BA%8E-token-%E7%9A%84%E8%AE%A4%E8%AF%81%E5%BA%94%E7%94%A8
 let moment = require('moment')
 let jwt = require('jwt-simple')
-app.set('jwtTokenSecret', SECRET_STRING)
+let jwtauth = require('./middleware/jwtauth')
 /*--------------- add something start ----------------------------*/
 // routes setup
 let apiRoutes = express.Router()
@@ -36,6 +38,7 @@ apiRoutes.all('*', function (req, res, next) {
     next()
   }
 })
+apiRoutes.all('/password', [jwtauth])
 apiRoutes.post('/login', function (req, res) {
   let ok = req.body.mobile && req.body.password
   if (ok) {
@@ -49,8 +52,7 @@ apiRoutes.post('/login', function (req, res) {
       'data': {
         'user': {
           'userId': 21,
-          'mobile': '17732900750',
-          'sex': 'female'
+          'mobile': req.body.mobile
         },
         'token': token
       }
@@ -107,7 +109,6 @@ apiRoutes.post('/forget', function (req, res) {
   }
 })
 apiRoutes.post('/password', function (req, res) {
-  console.log(req.body)
   let ok = req.body.mobile && req.body.oldpassword && req.body.newpassword
   if (ok) {
     res.status(200).json({
