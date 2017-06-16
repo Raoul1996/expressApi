@@ -1,25 +1,24 @@
-var express = require('express')
-var path = require('path')
-var cors = require('cors')
-var favicon = require('serve-favicon')
-var logger = require('morgan')
-var cookieParser = require('cookie-parser')
-var bodyParser = require('body-parser')
+let express = require('express')
+let path = require('path')
+let cors = require('cors')
+let favicon = require('serve-favicon')
+let logger = require('morgan')
+let cookieParser = require('cookie-parser')
+let bodyParser = require('body-parser')
 
-var index = require('./routes/index')
-var users = require('./routes/users')
+let index = require('./routes/index')
+let users = require('./routes/users')
 
-var app = express()
+let app = express()
 // 解析req.body
-var bodyParser = require('body-parser')
-var multer = require('multer')
-var upload = multer() // 解析 multipart/form-data 类型数据
+let multer = require('multer')
+let upload = multer() // 解析 multipart/form-data 类型数据
 app.use(bodyParser.json()) // 解析 application/json 类型数据
 app.use(bodyParser.urlencoded({extended: true})) // 解析 application/x-www-form-urlencoded 类型数据
 
 /*--------------- add something start ----------------------------*/
 // routes setup
-var apiRoutes = express.Router()
+let apiRoutes = express.Router()
 apiRoutes.all('*', function (req, res, next) {
   res.header('Access-Control-Allow-Origin', '*')
   res.header('Access-Control-Allow-Headers', 'Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With')
@@ -47,11 +46,10 @@ apiRoutes.post('/login', function (req, res) {
       }
     }
   )
-
 })
 apiRoutes.post('/register', function (req, res) {
   console.log(req.body)
-  var ok = req.body.mobile && req.body.password
+  let ok = req.body.mobile && req.body.password
   if (ok) {
     res.status(200).json({
       'code': 0,
@@ -70,23 +68,50 @@ apiRoutes.post('/register', function (req, res) {
     })
   }
 })
-apiRoutes.post('/forget', function (req, res, next) {
-  res.json({
-    'code': 0,
-    'data': {
-      'successful': 'your need set the oldMobile newMobile password and code in the request body'
-    }
-  })
+apiRoutes.post('/forget', function (req, res) {
+  console.log(req.body)
+  let ok = req.body.mobile && req.body.newpassword
+  if (ok) {
+    res.status(200).json({
+      'code': 0,
+      'data': {
+        'msg': 'reset password successful',
+        'mobile': req.body.mobile,
+        'newPassword': req.body.newpassword
+      }
+    })
+  } else {
+    res.status(200).json({
+      'code': 10001,
+      'data': {
+        'msg': 'reset password error,please check your data'
+      }
+    })
+  }
+})
+apiRoutes.post('/password', function (req, res) {
+  console.log(req.body)
+  let ok = req.body.mobile && req.body.oldpassword && req.body.newpassword
+  if (ok) {
+    res.status(200).json({
+      'code': 0,
+      'data': {
+        'msg': 'change password successful',
+        'mobile': req.body.mobile,
+        'oldPassword': req.body.oldpassword,
+        'newPassword': req.body.newpassword
+      }
+    })
+  } else {
+    res.status(200).json({
+      'code': 10001,
+      'data': {
+        'msg': 'change password error,please check your data'
+      }
+    })
+  }
 })
 apiRoutes.post('/changeMobile', function (req, res, next) {
-  res.json({
-    'code': 0,
-    'data': {
-      'successful': 'your need set the oldMobile newMobile password and code in the request body'
-    }
-  })
-})
-apiRoutes.post('/password', function (req, res, next) {
   res.json({
     'code': 0,
     'data': {
@@ -161,7 +186,7 @@ app.use('/', index)
 app.use('/users', users)
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
-  var err = new Error('Not Found')
+  let err = new Error('Not Found')
   err.status = 404
   next(err)
 })
