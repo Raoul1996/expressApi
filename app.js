@@ -154,20 +154,6 @@ apiRoutes.get(/animals?$/, function (req, res, next) {
 apiRoutes.get('/employee/:uid/:age', function (req, res, next) {
   res.json(req.params)
 })
-// 500 middleware
-apiRoutes.use(function (err, req, res, next) {
-  console.error(err.stack)
-  res.status(500).json({
-    'code': 500
-  })
-})
-// 404 middleware
-apiRoutes.use(function (req, res) {
-  res.status(404).json(
-    {'code': 404}
-  )
-})
-
 app.use('/api', apiRoutes)
 /*--------------- add something end ----------------------------*/
 // view engine setup
