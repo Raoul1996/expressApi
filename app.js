@@ -15,7 +15,11 @@ let multer = require('multer')
 let upload = multer() // 解析 multipart/form-data 类型数据
 app.use(bodyParser.json()) // 解析 application/json 类型数据
 app.use(bodyParser.urlencoded({extended: true})) // 解析 application/x-www-form-urlencoded 类型数据
-
+/*-------------------token------------------*/
+const SECRET_STRING = 'vue-login-demo'
+let moment = require('moment')
+let jwt = require('jwt-simple')
+app.set('jwtTokenSecret', SECRET_STRING)
 /*--------------- add something start ----------------------------*/
 // routes setup
 let apiRoutes = express.Router()
@@ -33,8 +37,14 @@ apiRoutes.all('*', function (req, res, next) {
   }
 })
 apiRoutes.post('/login', function (req, res) {
-  res.status(200).json(
-    {
+  let ok = req.body.mobile && req.body.password
+  if (ok) {
+    let expires = moment().add(7, 'days').valueOf()
+    let token = jwt.encode({
+      iss: req.body.mobile,
+      exp: expires
+    }, app.get('jwtTokenSecret'))
+    res.status(200).json({
       'code': 0,
       'data': {
         'user': {
@@ -42,10 +52,17 @@ apiRoutes.post('/login', function (req, res) {
           'mobile': '17732900750',
           'sex': 'female'
         },
-        'token': '9b6020276b244645a9a0adb130a694fd'
+        'token': token
       }
-    }
-  )
+    })
+  } else {
+    res.status(200).json({
+      'code': 10001,
+      'data': {
+        'msg': 'login error,please check your data'
+      }
+    })
+  }
 })
 apiRoutes.post('/register', function (req, res) {
   console.log(req.body)
@@ -55,8 +72,8 @@ apiRoutes.post('/register', function (req, res) {
       'code': 0,
       'data': {
         'msg': 'login successful',
-        'mobile': req.body.mobile || '15033332222',
-        'password': req.body.password || '123456'
+        'mobile': req.body.mobile,
+        'password': req.body.password
       }
     })
   } else {
