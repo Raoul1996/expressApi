@@ -66,26 +66,61 @@ apiRoutes.post('/login', function (req, res) {
     })
   }
 })
+apiRoutes.get('/user', function (req, res) {
+    User.find({}, (err, user) => {
+        if (err) console.log(err)
+        res.status(200).json({
+            data: user
+        })
+    })
+})
 apiRoutes.post('/register', function (req, res) {
-  console.log(req.body)
-  let ok = req.body.mobile && req.body.password
-  if (ok) {
-    res.status(200).json({
-      'code': 0,
-      'data': {
-        'msg': 'login successful',
-        'mobile': req.body.mobile,
-        'password': req.body.password
-      }
-    })
-  } else {
-    res.status(200).json({
-      'code': 10001,
-      'data': {
-        'msg': 'login error,please check your data'
-      }
-    })
-  }
+    // console.log(req.body)
+    let mobile = req.body.mobile
+    let password = req.body.password
+    if (mobile && password) {
+        let users = new User({mobile, password})
+        User.findOne({mobile: mobile}, (err, user) => {
+            if (err) {
+                return res.status(ERR).json({
+                    'code': NOT_FOUND,
+                    'data': {
+                        'msg': 'register err'
+                    }
+                })
+            }
+            if (user) {
+                return res.status(ERR).json({
+                    'code': 20001,
+                    'data': {
+                        'msg': 'user exist'
+                    }
+                })
+            } else {
+                users.save(function (err) {
+                    if (err) {
+                        console.log(`save error,${err}`)
+                    }
+                    console.log('save successful')
+                })
+                res.status(ERR_OK).json({
+                    'code': 0,
+                    'data': {
+                        'msg': 'register successful',
+                        'mobile': req.body.mobile,
+                        'password': req.body.password
+                    }
+                })
+            }
+        })
+    } else {
+        res.status(ERR_OK).json({
+            'code': 10001,
+            'data': {
+                'msg': 'register error,please check your data'
+            }
+        })
+    }
 })
 apiRoutes.post('/forget', function (req, res) {
   console.log(req.body)
