@@ -12,6 +12,14 @@ let users = require('./routes/users')
 let app = express()
 const SECRET_STRING = 'vue-login-demo'
 app.set('jwtTokenSecret', SECRET_STRING)
+let port = process.env.PORT || 3000
+let User = require('./models/users')
+let connectDB = require('./connect')
+connectDB()
+const ERR = 401
+const NOT_FOUND = 10001
+const ERR_OK = 200
+let auth = require('./authenticate')
 // 解析req.body
 let multer = require('multer')
 let upload = multer() // 解析 multipart/form-data 类型数据
@@ -40,23 +48,52 @@ apiRoutes.all('*', function (req, res, next) {
 })
 apiRoutes.all('/password', [jwtauth])
 apiRoutes.post('/login', function (req, res) {
-  let ok = req.body.mobile && req.body.password
-  if (ok) {
-    let expires = moment().add(7, 'days').valueOf()
-    let token = jwt.encode({
-      iss: req.body.mobile,
-      exp: expires
-    }, app.get('jwtTokenSecret'))
-    res.status(200).json({
-      'code': 0,
-      'data': {
-        'user': {
-          'userId': 21,
-          'mobile': req.body.mobile
-        },
-        'token': token
+  let mobile = req.body.mobile
+  let password = req.body.password
+  if (mobile && password) {
+    User.findOne({mobile: mobile}, (err, user) => {
+      if (err) {
+        return res.status(ERR).json({
+          'code': NOT_FOUND,
+          'data': {
+            'msg': 'user not found'
+          }
+        })
       }
+      if (!user) {
+        return res.status(ERR).json({
+          'code': NOT_FOUND,
+          'data': {
+            'msg': 'incorrect username'
+          }
+        })
+      }
+      if (user.password !== password) {
+        return res.status(ERR).json({
+          'code': NOT_FOUND,
+          'data': {
+            'msg': 'incorrect password'
+          }
+        })
+      }
+      // User has authenticated ok
+      let expires = moment().add(7, 'days').valueOf()
+      let token = jwt.encode({
+        iss: req.body.mobile,
+        exp: expires
+      }, app.get('jwtTokenSecret'))
+      res.status(200).json({
+        'code': 0,
+        'data': {
+          'user': {
+            'userId': 21,
+            'mobile': req.body.mobile
+          },
+          'token': token
+        }
+      })
     })
+
   } else {
     res.status(200).json({
       'code': 10001,
