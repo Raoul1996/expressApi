@@ -98,7 +98,7 @@ apiRoutes.post('/login', function (req, res) {
     res.status(200).json({
       'code': 10001,
       'data': {
-        'msg': 'login error,please check your data'
+        'msg': 'login error,please check your data we need the mobile and password'
       }
     })
   }
@@ -161,14 +161,14 @@ apiRoutes.post('/register', function (req, res) {
 })
 apiRoutes.post('/forget', function (req, res) {
   console.log(req.body)
-  let ok = req.body.mobile && req.body.newpassword
+  let ok = req.body.mobile && req.body.newPassword
   if (ok) {
     res.status(200).json({
       'code': 0,
       'data': {
         'msg': 'reset password successful',
         'mobile': req.body.mobile,
-        'newPassword': req.body.newpassword
+        'newPassword': req.body.newPassword
       }
     })
   } else {
@@ -181,15 +181,15 @@ apiRoutes.post('/forget', function (req, res) {
   }
 })
 apiRoutes.post('/password', function (req, res) {
-  let ok = req.body.mobile && req.body.oldpassword && req.body.newpassword
+  let ok = req.body.mobile && req.body.oldPassword && req.body.newPassword
   if (ok) {
     res.status(200).json({
       'code': 0,
       'data': {
         'msg': 'change password successful',
         'mobile': req.body.mobile,
-        'oldPassword': req.body.oldpassword,
-        'newPassword': req.body.newpassword
+        'oldPassword': req.body.oldPassword,
+        'newPassword': req.body.newPassword
       }
     })
   } else {
