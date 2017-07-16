@@ -17,6 +17,15 @@ let jwtauth = require('../middleware/jwtauth')
 let corsHeader = require('../middleware/cors')
 router.all('*', [corsHeader])
 router.all('/password', [jwtauth])
+/**
+ * @api {post} /users/login Login
+ * @apiName Login
+ * @apiGroup Users
+ * @apiParam {String} mobile the phone number
+ * @apiParam {String} password the password
+ * @apiSuccessExample {json} Success-Response
+ * {"code":0,"data":{"user":{"userId":21,"mobile":"1"},"token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiIxIiwiZXhwIjoxNTAwNzk1OTQ2MzI2fQ.2n6zP3wWR9Wt9I0eu9ViqSmpAFsegrpohb-dBddQNBo"}}
+ **/
 router.post('/login', function (req, res) {
   let mobile = req.body.mobile
   let password = req.body.password
@@ -73,6 +82,9 @@ router.post('/login', function (req, res) {
     })
   }
 })
+/**
+ *
+ */
 router.get('/user', function (req, res) {
   User.find({}, (err, user) => {
     if (err) console.log(err)
@@ -81,6 +93,19 @@ router.get('/user', function (req, res) {
     })
   })
 })
+/**
+ * @api {post} /users/register Register
+ * @apiName Register
+ * @apiGroup Users
+ * @apiParam {String} mobile the phone number
+ * @apiParam {String} password the password
+ * @apiSuccessExample {json} Success-Response
+ * {"code":0,"data":{"msg":"register successful","mobile":"10086","password":"112345"}}
+ * @apiErrorExample {json} Error-Response
+ * {"code":20001,"data":{"msg":"user exists"}}
+ * * @apiErrorExample {json} Error-Response
+ * {"code":10001,"data":{"msg":"register err"}}
+ **/
 router.post('/register', function (req, res) {
   // console.log(req.body)
   let mobile = req.body.mobile
@@ -100,7 +125,7 @@ router.post('/register', function (req, res) {
         return res.status(ERR).json({
           'code': 20001,
           'data': {
-            'msg': 'user exist'
+            'msg': 'user exists'
           }
         })
       } else {
@@ -129,6 +154,17 @@ router.post('/register', function (req, res) {
     })
   }
 })
+/**
+ * @api {post} /users/forget Forget
+ * @apiName Forget
+ * @apiGroup Users
+ * @apiParam {String} mobile the phone number
+ * @apiParam {String} newPassword the new password
+ * @apiSuccessExample {json} Success-Response
+ * {"code":0,"data":{"msg":"reset password successful","mobile":"1","newPassword":"1"}}
+ * * @apiErrorExample {json} Error-Response
+ * {"code":10001,"data":{"msg":"reset password error,please check your data"}}
+ **/
 router.post('/forget', function (req, res) {
   console.log(req.body)
   let ok = req.body.mobile && req.body.newPassword
@@ -150,6 +186,17 @@ router.post('/forget', function (req, res) {
     })
   }
 })
+/**
+ * @api {post} /users/password Password
+ * @apiName Password
+ * @apiDescription 这个接口需要 token
+ * @apiGroup Users
+ * @apiParam {String} mobile the phone number
+ * @apiParam {String} newPassword the new password
+ * @apiParam {String} oldPassword the old password
+ * @apiSuccessExample {json} Success-Response
+ * {"code":0,"data":{"msg":"reset password successful","mobile":"1","newPassword":"1","oldPassword":"1"}}
+ **/
 router.post('/password', function (req, res) {
   let ok = req.body.mobile && req.body.oldPassword && req.body.newPassword
   if (ok) {
