@@ -1,11 +1,6 @@
 let express = require('express')
-let app = express()
 let router = express.Router()
-let path = require('path')
-let cors = require('cors')
-let favicon = require('serve-favicon')
-let bodyParser = require('body-parser')
-
+let app = express()
 const SECRET_STRING = 'vue-login-demo'
 app.set('jwtTokenSecret', SECRET_STRING)
 let User = require('../models/users')
@@ -14,32 +9,13 @@ const NOT_FOUND = 10001
 const ERR_OK = 200
 let auth = require('../authenticate')
 // 解析req.body
-let multer = require('multer')
-let upload = multer() // 解析 multipart/form-data 类型数据
-app.use(bodyParser.json()) // 解析 application/json 类型数据
-app.use(bodyParser.urlencoded({extended: true})) // 解析 application/x-www-form-urlencoded 类型数据
 /*-------------------token------------------*/
 // http://blog.leanote.com/post/what722@163.com/%E5%AE%9E%E7%8E%B0%E5%9F%BA%E4%BA%8E-token-%E7%9A%84%E8%AE%A4%E8%AF%81%E5%BA%94%E7%94%A8
 let moment = require('moment')
 let jwt = require('jwt-simple')
 let jwtauth = require('../middleware/jwtauth')
-/* GET home page. */
-router.get('/', function (req, res, next) {
-  res.render('index', {title: 'Express'})
-})
-router.all('*', function (req, res, next) {
-  res.header('Access-Control-Allow-Origin', '*')
-  res.header('Access-Control-Allow-Headers', 'Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With')
-  res.header('Access-Control-Allow-Methods', 'PUT,POST,GET,DELETE,OPTIONS')
-  res.header('X-Powered-By', ' 3.2.1')
-  res.header('Allow', 'GET, HEAD, POST, PUT, DELETE, OPTIONS, PATCH')
-  res.header('Content-Type', 'application/json;charset=utf-8')
-  if (req.type === 'OPTIONS') {
-    res.send(200)
-  } else {
-    next()
-  }
-})
+let corsHeader = require('../middleware/cors')
+router.all('*', [corsHeader])
 router.all('/password', [jwtauth])
 router.post('/login', function (req, res) {
   let mobile = req.body.mobile
