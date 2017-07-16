@@ -185,5 +185,75 @@ define({ "api": [
     "version": "0.0.0",
     "filename": "routes/users.js",
     "groupTitle": "Users"
+  },
+  {
+    "type": "get",
+    "url": "/api/*man",
+    "title": "*man",
+    "name": "_man",
+    "group": "api",
+    "version": "0.0.0",
+    "filename": "routes/api.js",
+    "groupTitle": "api"
+  },
+  {
+    "type": "get",
+    "url": "/api/animals?",
+    "title": "animals?",
+    "name": "animals_",
+    "group": "api",
+    "version": "0.0.0",
+    "filename": "routes/api.js",
+    "groupTitle": "api"
+  },
+  {
+    "type": "get",
+    "url": "/api/book",
+    "title": "Book",
+    "name": "book",
+    "group": "api",
+    "version": "0.0.0",
+    "filename": "routes/api.js",
+    "groupTitle": "api"
+  },
+  {
+    "type": "post",
+    "url": "/api/changeMobile",
+    "title": "changeGender",
+    "name": "changeGender",
+    "group": "api",
+    "version": "0.0.0",
+    "filename": "routes/api.js",
+    "groupTitle": "api"
+  },
+  {
+    "type": "post",
+    "url": "/api/changeMobile",
+    "title": "changeMobile",
+    "name": "changeMobile",
+    "group": "api",
+    "version": "0.0.0",
+    "filename": "routes/api.js",
+    "groupTitle": "api"
+  },
+  {
+    "type": "get",
+    "url": "/api/employee/:uid/:age",
+    "title": "employee",
+    "name": "employee",
+    "group": "api",
+    "version": "0.0.0",
+    "filename": "routes/api.js",
+    "groupTitle": "api"
+  },
+  {
+    "type": "post",
+    "url": "/api/verify",
+    "title": "verifyCode",
+    "name": "verify_Code",
+    "group": "api",
+    "version": "0.0.0",
+    "filename": "routes/api.js",
+    "groupTitle": "api"
   }
 ] });

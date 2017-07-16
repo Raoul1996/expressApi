@@ -3,6 +3,11 @@ let router = express.Router()
 let app = express()
 let corsHeader = require('../middleware/cors')
 router.all('*', [corsHeader])
+/**
+ * @api {post} /api/changeMobile changeMobile
+ * @apiName changeMobile
+ * @apiGroup api
+ */
 router.post('/changeMobile', function (req, res, next) {
   res.json({
     'code': 0,
@@ -11,6 +16,11 @@ router.post('/changeMobile', function (req, res, next) {
     }
   })
 })
+/**
+ * @api {post} /api/changeMobile changeGender
+ * @apiName changeGender
+ * @apiGroup api
+ */
 router.post('/change', function (req, res, next) {
   res.json({
     'code': 0,
@@ -20,6 +30,11 @@ router.post('/change', function (req, res, next) {
     }
   })
 })
+/**
+ * @api {post} /api/verify verifyCode
+ * @apiName verify Code
+ * @apiGroup api
+ */
 router.post('/verify', function (req, res, next) {
   res.json(
     {
@@ -30,19 +45,35 @@ router.post('/verify', function (req, res, next) {
     }
   )
 })
-// strings type
+/**
+ * @api {get} /api/book Book
+ * @apiName book
+ * @apiGroup api
+ */
 router.get('/book', function (req, res, next) {
   res.send('book')
 })
-// string model
+/**
+ * @api {get} /api/*man *man
+ * @apiName *man
+ * @apiGroup api
+ */
 router.get('/usr/*man', function (req, res, next) {
   res.send('usr')
 })
-// reg type
+/**
+ * @api {get} /api/animals? animals?
+ * @apiName animals?
+ * @apiGroup api
+ */
 router.get(/animals?$/, function (req, res, next) {
   res.send('animals')
 })
-// args
+/**
+ * @api {get} /api/employee/:uid/:age employee
+ * @apiName employee
+ * @apiGroup api
+ */
 router.get('/employee/:uid/:age', function (req, res, next) {
   res.json(req.params)
 })
