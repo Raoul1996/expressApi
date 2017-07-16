@@ -1,6 +1,7 @@
 {
   "name": "expressApi",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "title": "api doc",
-  "description": "raoul's test project"
+  "description": "raoul's mock Server project. ",
+  "url": "http://localhost:3000"
 }
