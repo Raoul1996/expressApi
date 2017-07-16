@@ -1,24 +1,19 @@
 let express = require('express')
+let app = express()
 let path = require('path')
 let cors = require('cors')
 let favicon = require('serve-favicon')
 let logger = require('morgan')
 let cookieParser = require('cookie-parser')
 let bodyParser = require('body-parser')
-
-let index = require('./routes/index')
 let users = require('./routes/users')
 
-let app = express()
 const SECRET_STRING = 'vue-login-demo'
 app.set('jwtTokenSecret', SECRET_STRING)
 let port = process.env.PORT || 3000
 let User = require('./models/users')
 let connectDB = require('./connect')
 connectDB()
-const ERR = 401
-const NOT_FOUND = 10001
-const ERR_OK = 200
 let auth = require('./authenticate')
 // 解析req.body
 let multer = require('multer')
@@ -31,219 +26,8 @@ let moment = require('moment')
 let jwt = require('jwt-simple')
 let jwtauth = require('./middleware/jwtauth')
 /*--------------- add something start ----------------------------*/
-// routes setup
-let apiRoutes = express.Router()
-apiRoutes.all('*', function (req, res, next) {
-  res.header('Access-Control-Allow-Origin', '*')
-  res.header('Access-Control-Allow-Headers', 'Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With')
-  res.header('Access-Control-Allow-Methods', 'PUT,POST,GET,DELETE,OPTIONS')
-  res.header('X-Powered-By', ' 3.2.1')
-  res.header('Allow', 'GET, HEAD, POST, PUT, DELETE, OPTIONS, PATCH')
-  res.header('Content-Type', 'application/json;charset=utf-8')
-  if (req.type === 'OPTIONS') {
-    res.send(200)
-  } else {
-    next()
-  }
-})
-apiRoutes.all('/password', [jwtauth])
-apiRoutes.post('/login', function (req, res) {
-  let mobile = req.body.mobile
-  let password = req.body.password
-  if (mobile && password) {
-    User.findOne({mobile: mobile}, (err, user) => {
-      if (err) {
-        return res.status(ERR).json({
-          'code': NOT_FOUND,
-          'data': {
-            'msg': 'user not found'
-          }
-        })
-      }
-      if (!user) {
-        return res.status(ERR).json({
-          'code': NOT_FOUND,
-          'data': {
-            'msg': 'incorrect username'
-          }
-        })
-      }
-      if (user.password !== password) {
-        return res.status(ERR).json({
-          'code': NOT_FOUND,
-          'data': {
-            'msg': 'incorrect password'
-          }
-        })
-      }
-      // User has authenticated ok
-      let expires = moment().add(7, 'days').valueOf()
-      let token = jwt.encode({
-        iss: req.body.mobile,
-        exp: expires
-      }, app.get('jwtTokenSecret'))
-      res.status(200).json({
-        'code': 0,
-        'data': {
-          'user': {
-            'userId': 21,
-            'mobile': req.body.mobile
-          },
-          'token': token
-        }
-      })
-    })
 
-  } else {
-    res.status(200).json({
-      'code': 10001,
-      'data': {
-        'msg': 'login error,please check your data we need the mobile and password'
-      }
-    })
-  }
-})
-apiRoutes.get('/user', function (req, res) {
-    User.find({}, (err, user) => {
-        if (err) console.log(err)
-        res.status(200).json({
-            data: user
-        })
-    })
-})
-apiRoutes.post('/register', function (req, res) {
-    // console.log(req.body)
-    let mobile = req.body.mobile
-    let password = req.body.password
-    if (mobile && password) {
-        let users = new User({mobile, password})
-        User.findOne({mobile: mobile}, (err, user) => {
-            if (err) {
-                return res.status(ERR).json({
-                    'code': NOT_FOUND,
-                    'data': {
-                        'msg': 'register err'
-                    }
-                })
-            }
-            if (user) {
-                return res.status(ERR).json({
-                    'code': 20001,
-                    'data': {
-                        'msg': 'user exist'
-                    }
-                })
-            } else {
-                users.save(function (err) {
-                    if (err) {
-                        console.log(`save error,${err}`)
-                    }
-                    console.log('save successful')
-                })
-                res.status(ERR_OK).json({
-                    'code': 0,
-                    'data': {
-                        'msg': 'register successful',
-                        'mobile': req.body.mobile,
-                        'password': req.body.password
-                    }
-                })
-            }
-        })
-    } else {
-        res.status(ERR_OK).json({
-            'code': 10001,
-            'data': {
-                'msg': 'register error,please check your data'
-            }
-        })
-    }
-})
-apiRoutes.post('/forget', function (req, res) {
-  console.log(req.body)
-  let ok = req.body.mobile && req.body.newPassword
-  if (ok) {
-    res.status(200).json({
-      'code': 0,
-      'data': {
-        'msg': 'reset password successful',
-        'mobile': req.body.mobile,
-        'newPassword': req.body.newPassword
-      }
-    })
-  } else {
-    res.status(200).json({
-      'code': 10001,
-      'data': {
-        'msg': 'reset password error,please check your data'
-      }
-    })
-  }
-})
-apiRoutes.post('/password', function (req, res) {
-  let ok = req.body.mobile && req.body.oldPassword && req.body.newPassword
-  if (ok) {
-    res.status(200).json({
-      'code': 0,
-      'data': {
-        'msg': 'change password successful',
-        'mobile': req.body.mobile,
-        'oldPassword': req.body.oldPassword,
-        'newPassword': req.body.newPassword
-      }
-    })
-  } else {
-    res.status(200).json({
-      'code': 10001,
-      'data': {
-        'msg': 'change password error,please check your data'
-      }
-    })
-  }
-})
-apiRoutes.post('/changeMobile', function (req, res, next) {
-  res.json({
-    'code': 0,
-    'data': {
-      'successful': 'your need set the oldMobile newMobile password and code in the request body'
-    }
-  })
-})
-apiRoutes.post('/change', function (req, res, next) {
-  res.json({
-    'code': 0,
-    'data': {
-      'mobile': '15433613546',
-      'male': 1
-    }
-  })
-})
-apiRoutes.post('/verify', function (req, res, next) {
-  res.json(
-    {
-      'code': 0,
-      'data': {
-        'code': '1234'
-      }
-    }
-  )
-})
-// strings type
-apiRoutes.get('/book', function (req, res, next) {
-  res.send('book')
-})
-// string model
-apiRoutes.get('/usr/*man', function (req, res, next) {
-  res.send('usr')
-})
-// reg type
-apiRoutes.get(/animals?$/, function (req, res, next) {
-  res.send('animals')
-})
-// args
-apiRoutes.get('/employee/:uid/:age', function (req, res, next) {
-  res.json(req.params)
-})
+let apiRoutes = require('./routes/api')
 app.use('/api', apiRoutes)
 /*--------------- add something end ----------------------------*/
 // view engine setup
@@ -258,8 +42,7 @@ app.use(bodyParser.urlencoded({extended: false}))
 app.use(cookieParser())
 app.use(express.static(path.join(__dirname, 'public')))
 app.use(cors())
-app.use('/', index)
-app.use('/users', users)
+// app.use('/users', users)
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
   let err = new Error('Not Found')
