@@ -22,22 +22,23 @@
 //
 //                          佛祖保佑         永无bug
 //                          
-let express = require('express')
-let app = express()
-let path = require('path')
-let cors = require('cors')
-let favicon = require('serve-favicon')
-let logger = require('morgan')
-let cookieParser = require('cookie-parser')
-let bodyParser = require('body-parser')
-let users = require('./routes/users')
-let api = require('./routes/api')
-let connectDB = require('./connect')
+const express = require('express')
+const app = express()
+const path = require('path')
+const cors = require('cors')
+const favicon = require('serve-favicon')
+const logger = require('morgan')
+const cookieParser = require('cookie-parser')
+const bodyParser = require('body-parser')
+const users = require('./routes/users')
+const api = require('./routes/api')
+const poem = require('./routes/poem')
+const connectDB = require('./connect')
 connectDB()
-let auth = require('./authenticate')
+const auth = require('./authenticate')
 // 解析req.body
-let multer = require('multer')
-let upload = multer() // 解析 multipart/form-data 类型数据
+const multer = require('multer')
+const upload = multer() // 解析 multipart/form-data 类型数据
 app.use(bodyParser.json()) // 解析 application/json 类型数据
 app.use(bodyParser.urlencoded({extended: true})) // 解析 application/x-www-form-urlencoded 类型数据
 /*--------------- add something end ----------------------------*/
@@ -56,9 +57,10 @@ app.use(express.static(path.join(__dirname, 'public')))
 app.use(cors())
 app.use('/users', users)
 app.use('/api', api)
+app.use('/poem', poem)
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
-  let err = new Error('Not Found')
+  const err = new Error('Not Found')
   err.status = 404
   next(err)
 })
