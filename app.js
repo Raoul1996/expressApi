@@ -30,6 +30,8 @@ const favicon = require('serve-favicon')
 const logger = require('morgan')
 const cookieParser = require('cookie-parser')
 const bodyParser = require('body-parser')
+// 使用elm restc中间件
+const restc = require('restc')
 const users = require('./routes/users')
 const api = require('./routes/api')
 const poem = require('./routes/poem')
