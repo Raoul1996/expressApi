@@ -1,7 +1,6 @@
-let express = require('express')
-let router = express.Router()
-let app = express()
-let corsHeader = require('../middleware/cors')
+const express = require('express')
+const router = express.Router()
+const corsHeader = require('../middleware/cors')
 router.all('*', [corsHeader])
 /**
  * @api {post} /api/changeMobile changeMobile

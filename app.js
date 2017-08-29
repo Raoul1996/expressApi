@@ -1,4 +1,4 @@
-//  
+//
 //                                  _oo8oo_
 //                                 o8888888o
 //                                 88" . "88
@@ -17,11 +17,11 @@
 //                    \  \ `-.   \_ __\ /__ _/   .-` /  /
 //                =====`-.____`.___ \_____/ ___.`____.-`=====
 //                                  `=---=`
-//  
-//  
+//
+//
 //
 //                          佛祖保佑         永无bug
-//                          
+//
 const express = require('express')
 const app = express()
 const path = require('path')
@@ -55,6 +55,7 @@ app.use(cookieParser())
 // 定义静态目录位置
 app.use(express.static(path.join(__dirname, 'public')))
 app.use(cors())
+app.use(restc.express())
 app.use('/users', users)
 app.use('/api', api)
 app.use('/poem', poem)
