@@ -15,7 +15,7 @@
     "express": "~4.15.2",
     "jade": "~1.11.0",
     "jsonwebtoken": "^7.4.1",
-    "jwt-simple": "^0.5.1",
+    "jwt-simple": "^0.5.3",
     "moment": "^2.18.1",
     "mongoose": "^4.10.6",
     "morgan": "^1.8.2",
