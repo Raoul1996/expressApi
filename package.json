@@ -9,10 +9,10 @@
   },
   "dependencies": {
     "body-parser": "^1.17.2",
-    "cookie-parser": "~1.4.3",
+    "cookie-parser": "~1.4.7",
     "cors": "^2.8.3",
     "debug": "^2.6.8",
-    "express": "~4.15.2",
+    "express": "~4.21.1",
     "jade": "~1.11.0",
     "jsonwebtoken": "^7.4.1",
     "jwt-simple": "^0.5.1",
